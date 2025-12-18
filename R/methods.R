@@ -269,9 +269,11 @@ plot.gradLasso <- function(x, which = c(1L:5L), ...) {
   available_indices <- intersect(which(!sapply(plots, is.null)), which)
   if (length(available_indices) == 0) { message("No valid plots available to display."); return(invisible()) }
   
-  # Direct output for file devices, menu for interactive sessions
+  # Direct output for file devices, non-interactive sessions, OR CI environments
   is_file_device <- any(grepl("pdf|png|jpeg|tiff|bmp|postscript", names(dev.cur()), ignore.case = TRUE))
-  if (is_file_device) {
+  
+  # FIX: Added `|| !interactive()` to ensure CI environments never hit menu()
+  if (is_file_device || !interactive()) {
     for (i in available_indices) plots[[i]]()
     return(invisible())
   }
