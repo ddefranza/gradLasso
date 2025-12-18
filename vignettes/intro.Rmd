@@ -1,0 +1,109 @@
+---
+title: "Introduction to gradLasso"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to gradLasso}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The `gradLasso` package implements an efficient gradient descent solver for LASSO-penalized regression models. It supports several families including Gaussian, Binomial, Negative Binomial, and Zero-Inflated Negative Binomial (ZINB). It also features built-in stability selection and cross-validation.
+
+This vignette demonstrates the basic usage of the package.
+
+```{r}
+library(gradLasso)
+```
+
+## 1. Gaussian Regression (Standard LASSO)
+
+We start by simulating simple Gaussian data with correlated predictors.
+
+```{r}
+set.seed(42)
+# Simulate 200 obs, 20 predictors, 5 active
+sim <- simulate_data(n = 200, p = 20, family = "gaussian", k = 5, snr = 3.0)
+df <- data.frame(y = sim$y, sim$X)
+
+# Check the first few rows
+head(df[, 1:6])
+```
+
+We can fit the model using the standard formula interface. By default, `gradLasso` performs 50 bootstraps for stability selection.
+
+```{r}
+fit <- gradLasso(y ~ ., data = df, lambda_cv = TRUE, boot = TRUE, n_boot = 50)
+
+print(fit)
+```
+
+We can inspect the selected coefficients using `summary()`. The "Selection_Prob" column shows how often each variable was selected across bootstrap iterations.
+
+```{r}
+summary(fit)
+```
+
+### Diagnostics
+
+We can visualize the stability path and residual plots.
+
+```{r}
+# Plot Stability Selection (Plot 1) and CV Deviance (Plot 2)
+plot(fit, which = c(1, 2))
+```
+
+## 2. Zero-Inflated Negative Binomial (ZINB)
+
+`gradLasso` specializes in complex GLMs like ZINB. We support a pipe syntax (`|`) to specify different predictors for the Count model and the Zero-Inflation model.
+Simulation
+
+We simulate data where the count model depends on different variables than the zero-inflation model.
+
+```{r}
+set.seed(456)
+sim_zinb <- simulate_data(n = 500, p = 20, family = "zinb",
+                          k_mu = 5, k_pi = 5, theta = 2.0)
+df_zinb <- data.frame(y = sim_zinb$y, sim_zinb$X)
+```
+
+### Model Fitting
+
+We use the pipe syntax: `y ~ predictors_for_count | predictors_for_zero`. Here we use all variables (`.`) for both models.
+
+```{r}
+# We use a smaller number of bootstraps for speed in this vignette
+fit_zinb <- gradLasso(y ~ . | ., data = df_zinb,
+                      family = grad_zinb(),
+                      n_boot = 10,
+                      lambda = 0.05) # Fixed lambda for demonstration
+
+print(fit_zinb)
+```
+
+### Inspecting ZINB Coefficients
+
+The summary automatically splits coefficients into "Count", "Zero-Infl", and "Dispersion" components.
+
+```{r}
+summary(fit_zinb)
+```
+
+## 3. Parallel Processing
+
+For large datasets, `gradLasso` supports parallel execution for both Cross-Validation and Bootstrapping.
+
+```{r}
+# Example (not run in vignette):
+# fit <- gradLasso(y ~ ., data = df, parallel = TRUE, n_cores = 4)
+```
+
+Conclusion
+
+`gradLasso` provides a unified, tidy interface for sparse regression across multiple GLM families. Its integrated stability selection offers robust variable selection for high-dimensional data.
