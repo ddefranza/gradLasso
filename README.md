@@ -1,6 +1,6 @@
 # gradLasso
 
-[![R-CMD-check](https://github.com/ddefranza/gradLasso/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ddefranza/gradLasso/actions)
+[![R-CMD-check](https://github.com/ddefranza/gradLasso/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ddefranza/gradLasso/actions/workflows/R-CMD-check.yaml)
 **gradLasso** implements an efficient gradient descent solver for LASSO-penalized regression models. It is designed to handle large $N$ data and complex Generalized Linear Models (GLMs) including:
 
 * **Gaussian** (Standard Least Squares)
