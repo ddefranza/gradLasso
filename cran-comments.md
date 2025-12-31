@@ -7,3 +7,11 @@
 
 ## Reverse dependencies
 This is a new package, so there are no reverse dependencies.
+
+## Resubmission
+This is a resubmission. In this version I have:
+* Removed unnecessary whitespace from the Description field.
+* Added references (Tibshirani 1996, Meinshausen 2010) to the Description field.
+* Added \value tags to .Rd files for exported functions (gradLasso, simulate_data).
+* Added a 'verbose' argument to gradLasso() and cv.gradLasso() to suppress console output by default.
+* Ensured user settings (par) are reset using on.exit() in plot methods.
