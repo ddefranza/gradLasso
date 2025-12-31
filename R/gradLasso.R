@@ -14,6 +14,7 @@
 #' @param boot_ci Vector of two probabilities for CIs.
 #' @param batch_size Integer. Mini-batch SGD.
 #' @param warm_start Logical. Warm start bootstraps.
+#' @param verbose Logical. Print progress to console?
 #' @return An object of class \code{gradLasso}. This is a list containing:
 #' \item{coefficients}{A named vector of the final estimated regression coefficients.}
 #' \item{fitted.values}{A vector of the fitted values (response scale).}
@@ -36,7 +37,8 @@ gradLasso <- function(formula, data = NULL, family = grad_gaussian(),
                       boot = TRUE, n_boot = 50,
                       boot_ci = c(0.025, 0.975),
                       batch_size = NULL,
-                      warm_start = TRUE) {
+                      warm_start = TRUE,
+                      verbose = FALSE) {
   # Parallel setup ----
   if (parallel) {
     if (!requireNamespace("foreach", quietly = TRUE) || !requireNamespace("doParallel", quietly = TRUE)) {
@@ -156,20 +158,20 @@ gradLasso <- function(formula, data = NULL, family = grad_gaussian(),
   cv_res <- NULL
 
   if (run_cv) {
-    cat("Selecting lambda via Cross-Validation...\n")
+    if (verbose) cat("Selecting lambda via Cross-Validation...\n")
     cv_res <- cv.gradLasso(X, y, family,
       lambdas = cv_lambdas_to_test,
       batch_size = batch_size, subsample = cv_subsample,
-      parallel = parallel
+      parallel = parallel, verbose = verbose
     )
     final_lambda <- cv_res$lambda.min
-    cat(sprintf("Optimal Lambda: %f\n", final_lambda))
+    if (verbose) cat(sprintf("Optimal Lambda: %f\n", final_lambda))
   }
 
   if (is.null(final_lambda)) stop("No lambda selected.")
 
   # Final model fit ----
-  cat(sprintf("Fitting Final Model (Lambda=%f)...\n", final_lambda))
+  if (verbose) cat(sprintf("Fitting Final Model (Lambda=%f)...\n", final_lambda))
   main_beta <- fit_gradlasso(X, y, family, final_lambda, batch_size = batch_size)
 
   # Assign names to coefficients if missing
@@ -191,7 +193,7 @@ gradLasso <- function(formula, data = NULL, family = grad_gaussian(),
   boot_mat <- NULL
 
   if (boot) {
-    cat(sprintf("Running %d Bootstraps...\n", n_boot))
+    if (verbose) cat(sprintf("Running %d Bootstraps...\n", n_boot))
     n_params <- length(main_beta)
 
     if (parallel) {
@@ -211,7 +213,7 @@ gradLasso <- function(formula, data = NULL, family = grad_gaussian(),
       current_beta <- main_beta
 
       for (b in 1:n_boot) {
-        if (b %% 10 == 0) cat(sprintf("  Iter %d\n", b))
+        if (verbose && b %% 10 == 0) cat(sprintf("  Iter %d\n", b))
 
         idx <- sample(nrow(X), replace = TRUE)
         init_b <- if (warm_start) current_beta else NULL
