@@ -14,6 +14,11 @@
 #' @param intercept_mu Intercept for main model (or count part).
 #' @param intercept_pi Intercept for zero-inflation part.
 #' @param snr Signal-to-noise ratio (Gaussian only).
+#' @return A list containing the following components:
+#' \item{X}{A matrix of predictor variables with induced correlation.}
+#' \item{y}{A vector of the simulated response variable.}
+#' \item{family}{The family string used for simulation.}
+#' \item{truth}{A list containing the true parameters used to generate the data (e.g., \code{beta}, \code{theta}, \code{sigma}).}
 #' @export
 simulate_data <- function(n = 1000, p = 20, family = "gaussian", rho = 0.2,
                           k = 5, k_mu = 5, k_pi = 5, theta = 1.0,
@@ -24,7 +29,7 @@ simulate_data <- function(n = 1000, p = 20, family = "gaussian", rho = 0.2,
   # Construct Toeplitz covariance matrix
   Sigma <- matrix(0, p, p)
   for (i in 1:p) for (j in 1:p) Sigma[i, j] <- rho^abs(i - j)
-  
+
   # Induce correlation via Cholesky decomposition
   L <- chol(Sigma)
   X <- matrix(rnorm(n * p), n, p) %*% L
@@ -52,12 +57,11 @@ simulate_data <- function(n = 1000, p = 20, family = "gaussian", rho = 0.2,
     # Gaussian family
     beta <- create_beta(k)
     signal <- X %*% beta
-    
+
     # Scale noise to achieve target Signal-to-Noise Ratio (SNR)
     sigma_err <- sqrt(var(signal) / snr)
     y <- intercept_mu + signal + rnorm(n, sd = sigma_err)
     truth <- list(beta = beta, sigma = sigma_err)
-    
   } else if (family == "binomial") {
     # Binomial family
     beta <- create_beta(k)
@@ -65,21 +69,19 @@ simulate_data <- function(n = 1000, p = 20, family = "gaussian", rho = 0.2,
     probs <- 1 / (1 + exp(-eta))
     y <- rbinom(n, 1, probs)
     truth <- list(beta = beta)
-    
   } else if (family == "negbin") {
     # Negative Binomial family
     beta <- create_beta(k)
     eta <- intercept_mu + X %*% beta
-    
+
     # Clip linear predictor for numerical stability
     mu <- exp(pmin(eta, 20))
     y <- rnbinom(n, size = theta, mu = mu)
     truth <- list(beta = beta, theta = theta)
-    
   } else if (family == "zinb") {
     # Zero-Inflated Negative Binomial (ZINB) family
     beta_mu <- create_beta(k_mu, shift = 0)
-    
+
     # Shift zero model variables so they differ from count model variables
     beta_pi <- create_beta(k_pi, shift = 2)
 
