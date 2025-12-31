@@ -12,7 +12,8 @@ cv.gradLasso(
   nfolds = 5,
   batch_size = NULL,
   subsample = NULL,
-  parallel = FALSE
+  parallel = FALSE,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ cv.gradLasso(
 \item{subsample}{Integer. Number of rows to use for CV (if NULL, uses all data).}
 
 \item{parallel}{Logical. If TRUE, runs folds in parallel.}
+
+\item{verbose}{Logical. Print progress to console?}
 }
 \value{
 A list containing CV results (mean error, SD, optimal lambdas).

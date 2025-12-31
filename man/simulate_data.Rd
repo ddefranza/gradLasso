@@ -41,6 +41,13 @@ simulate_data(
 
 \item{snr}{Signal-to-noise ratio (Gaussian only).}
 }
+\value{
+A list containing the following components:
+\item{X}{A matrix of predictor variables with induced correlation.}
+\item{y}{A vector of the simulated response variable.}
+\item{family}{The family string used for simulation.}
+\item{truth}{A list containing the true parameters used to generate the data (e.g., \code{beta}, \code{theta}, \code{sigma}).}
+}
 \description{
 Generates synthetic data for Gaussian, Binomial, Negative Binomial, or ZINB models
 with correlated predictors.

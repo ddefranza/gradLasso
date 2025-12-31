@@ -18,7 +18,8 @@ gradLasso(
   n_boot = 50,
   boot_ci = c(0.025, 0.975),
   batch_size = NULL,
-  warm_start = TRUE
+  warm_start = TRUE,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -49,6 +50,20 @@ gradLasso(
 \item{batch_size}{Integer. Mini-batch SGD.}
 
 \item{warm_start}{Logical. Warm start bootstraps.}
+
+\item{verbose}{Logical. Print progress to console?}
+}
+\value{
+An object of class \code{gradLasso}. This is a list containing:
+\item{coefficients}{A named vector of the final estimated regression coefficients.}
+\item{fitted.values}{A vector of the fitted values (response scale).}
+\item{residuals}{A vector of the residuals (observed - fitted).}
+\item{lambda}{The penalty term (lambda) used for the final model.}
+\item{boot_matrix}{A matrix of bootstrap coefficient estimates (rows=iterations, cols=features), or NULL if \code{boot=FALSE}.}
+\item{cv_results}{A list containing cross-validation metrics (if \code{lambda_cv=TRUE}), including \code{lambda.min}.}
+\item{family}{The family object used for the fit.}
+\item{deviance}{The final model deviance.}
+\item{nobs}{The number of observations used.}
 }
 \description{
 Gradient Descent LASSO with Stability Selection
