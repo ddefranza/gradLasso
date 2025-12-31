@@ -1,6 +1,6 @@
 Package: gradLasso
 Title: Gradient Descent LASSO with Stability Selection and Bootstrapped Confidence Intervals
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: person("David", "DeFranza", email = "david.defranza@ucd.ie", role = c("aut", "cre"))
 Description: Implements LASSO regression using gradient descent with support for Gaussian, Binomial, Negative Binomial, and Zero-Inflated Negative Binomial (ZINB) families. Features cross-validation for determining lambda, stability selection, and bootstrapping for confidence intervals. Methods described in Tibshirani (1996) <doi:10.1111/j.2517-6161.1996.tb02080.x> and Meinshausen and Buhlmann (2010) <doi:10.1111/j.1467-9868.2010.00740.x>.
 URL: https://github.com/ddefranza/gradLasso
