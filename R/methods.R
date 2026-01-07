@@ -102,7 +102,7 @@ summary.gradLasso <- function(object, ...) {
       CI_High = ci_upper
     )
     ci_names <- paste0("CI_", format(ci_probs * 100, trim = TRUE, digits = 3))
-    colnames(res_df)[5:6] <- ci_names
+    colnames(res_df)[6:7] <- ci_names
     res_df <- res_df[order(-res_df$Selection_Prob), ]
   } else {
     res_df <- data.frame(Component = components, Predictor = predictors, Estimate = beta)
