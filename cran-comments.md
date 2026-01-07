@@ -14,3 +14,4 @@ This is a resubmission. In this version I have:
 * Added \value tags to .Rd files for exported functions (gradLasso, simulate_data).
 * Added a 'verbose' argument to gradLasso() and cv.gradLasso() to suppress console output by default.
 * Ensured user settings (par) are reset using on.exit() in plot methods.
+* Updated summary() to report the bootstrap mean coefficient to aid in interpreting stability selection.
