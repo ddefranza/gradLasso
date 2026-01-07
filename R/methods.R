@@ -86,6 +86,7 @@ summary.gradLasso <- function(object, ...) {
   # Build statistics table
   if (!is.null(object$boot_matrix)) {
     sel_prob <- colMeans(abs(object$boot_matrix) > 1e-5)
+    boot_mean <- colMeans(object$boot_matrix)
     ci_probs <- if (!is.null(object$boot_ci)) object$boot_ci else c(0.025, 0.975)
 
     ci_lower <- apply(object$boot_matrix, 2, quantile, probs = ci_probs[1])
@@ -96,6 +97,7 @@ summary.gradLasso <- function(object, ...) {
       Predictor = predictors,
       Estimate = beta,
       Selection_Prob = sel_prob,
+      Boot_Mean = boot_mean,
       CI_Low = ci_lower,
       CI_High = ci_upper
     )
