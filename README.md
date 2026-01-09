@@ -78,7 +78,7 @@ summary(fit_zinb)
 
 If you use `gradLasso` in your research, please cite it as:
 
-> DeFranza, D. (2025). gradLasso: Gradient Descent LASSO with Stability Selection. R package version 0.1.0. https://github.com/ddefranza/gradLasso
+> DeFranza, D. (2026). *gradLasso: Gradient descent LASSO with stability selection* (Version 0.1.0) [R Package]. CRAN. https://doi.org/10.32614/CRAN.package.gradLasso
 
 ## License
 
