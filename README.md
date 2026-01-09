@@ -13,7 +13,14 @@ Key features include built-in **Stability Selection** for robust variable identi
 
 ## Installation
 
-You can install the development version of gradLasso from [GitHub](https://github.com/) with:
+Install the stable version of gradLasso from [CRAN](https://cran.r-project.org/package=gradLasso):
+
+```r
+install.packages("gradLasso")
+library("gradLasso")
+```
+
+Alternatively, you can install the development version of gradLasso from [GitHub](https://github.com/) with:
 
 ```r
 # install.packages("devtools")
